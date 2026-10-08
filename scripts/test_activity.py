@@ -21,4 +21,17 @@ class Tests(unittest.TestCase):
   with patch.object(a,'api',side_effect=[[{}]*100,[{}]*3]) as call:
    self.assertEqual(sum(len(p) for p in a.pages('/test?q=a')),103)
    self.assertEqual(call.call_args.args[0],'/test?q=a&per_page=100&page=2')
+
+class CoverageTests(unittest.TestCase):
+ def test_membership_and_external_discovery(self):
+  start=a.instant('2026-10-02T07:00:00Z');end=a.instant('2026-10-09T07:00:00Z')
+  owned={'full_name':'NeoKazuya/own'};collab={'full_name':'AdminAsistee/TCGNakama'}
+  with patch.object(a,'pages',return_value=iter([[owned,collab]])) as listing, patch.object(a,'search_items',side_effect=[iter([{'repository_url':'https://api.github.com/repos/upstream/public'}]),iter([{'repository':{'full_name':'upstream/commit-only'}}])]), patch.object(a,'api',side_effect=lambda path:{'full_name':path.removeprefix('/repos/')}):
+   repos=a.discover_repos('NeoKazuya',start,end)
+   self.assertEqual({r['full_name'] for r in repos},{'NeoKazuya/own','AdminAsistee/TCGNakama','upstream/public','upstream/commit-only'})
+   self.assertIn('collaborator,organization_member',listing.call_args.args[0])
+ def test_search_refuses_partial_results(self):
+  with patch.object(a,'api',return_value={'incomplete_results':True,'total_count':4,'items':[]}):
+   with self.assertRaises(RuntimeError):list(a.search_items('issues','test'))
+
 if __name__=='__main__':unittest.main()

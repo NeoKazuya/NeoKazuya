@@ -33,12 +33,39 @@ def count_prs(batches, login, start, end):
         if batch and instant(batch[-1]['updated_at']) < start: break
     return count
 
+def search_items(kind, query):
+    """Discover external contributions without silently truncating GitHub search."""
+    from urllib.parse import urlencode
+    page = 1
+    while True:
+        result = api('/search/' + kind + '?' + urlencode({'q':query,'per_page':100,'page':page}))
+        if result.get('incomplete_results') or result['total_count'] > 1000:
+            raise RuntimeError('Contribution discovery incomplete; previous card preserved.')
+        yield from result['items']
+        if page * 100 >= result['total_count']: break
+        page += 1
+
+def discover_repos(login, start, end):
+    # Membership covers direct commits, including private collaborator/org work.
+    repos = {r['full_name'].lower():r for batch in pages(
+        '/user/repos?affiliation=owner,collaborator,organization_member&sort=full_name') for r in batch}
+    # Search also finds public upstream contributions without collaborator access.
+    # Broad UTC dates discover candidates; exact timezone boundaries are applied later.
+    dates = start.astimezone(UTC).date().isoformat() + '..' + end.astimezone(UTC).date().isoformat()
+    names = set()
+    for pr in search_items('issues', f'is:pr author:{login} is:merged merged:{dates}'):
+        names.add(pr['repository_url'].split('/repos/',1)[1])
+    for commit in search_items('commits', f'author:{login} committer-date:{dates}'):
+        names.add(commit['repository']['full_name'])
+    for name in sorted(names):
+        if name.lower() not in repos: repos[name.lower()] = api('/repos/' + name)
+    return list(repos.values())
+
 def collect(login, start, end):
     from urllib.parse import urlencode
-    repos = [r for batch in pages('/user/repos?affiliation=owner&sort=full_name') for r in batch]
     rows = []
-    for repo in repos:
-        if repo['owner']['login'].lower() != login.lower() or repo['name'].lower() == login.lower(): continue
+    for repo in discover_repos(login, start, end):
+        if repo['full_name'].lower() == f'{login}/{login}'.lower(): continue
         if repo.get('size', 0) == 0: continue
         base = '/repos/' + repo['full_name']
         prs = count_prs(pages(base + '/pulls?state=closed&sort=updated&direction=desc'), login, start, end)
@@ -49,7 +76,12 @@ def collect(login, start, end):
                 date = c['commit']['committer']['date']
                 if start <= instant(date) < end: commits.add(c['sha'])
         if prs or commits:
-            rows.append({'name':repo['name'], 'description':repo.get('description') or '', 'prs':prs, 'commits':len(commits)})
+            rows.append({'name':repo['name'], 'repository':repo['full_name'], 'description':repo.get('description') or '', 'prs':prs, 'commits':len(commits)})
+    # Distinguish identically named projects owned by different people.
+    from collections import Counter
+    names = Counter(p['name'].casefold() for p in rows)
+    for p in rows:
+        if names[p['name'].casefold()] > 1: p['name'] = p['repository']
     return rows
 
 def rank(rows):
