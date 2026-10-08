@@ -34,4 +34,15 @@ class CoverageTests(unittest.TestCase):
   with patch.object(a,'api',return_value={'incomplete_results':True,'total_count':4,'items':[]}):
    with self.assertRaises(RuntimeError):list(a.search_items('issues','test'))
 
+class DescriptionTests(unittest.TestCase):
+ def test_full_description_survives_wrapping(self):
+  description = 'A long GitHub description with words that should wrap. ' * 8
+  row={'name':'project','description':description,'prs':1,'commits':2}
+  root=ET.fromstring(a.render([row],'Oct 2–8','now'))
+  values=[t.text or '' for t in root.findall('{http://www.w3.org/2000/svg}text')]
+  lines=[t for t in values if t.startswith('A long') or 'description' in t or 'should wrap' in t]
+  self.assertIn(' '.join(description.split()),' '.join(values))
+  self.assertNotIn('…',' '.join(values))
+  self.assertGreater(int(root.attrib['height']),230)
+
 if __name__=='__main__':unittest.main()

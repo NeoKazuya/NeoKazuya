@@ -4,7 +4,7 @@
     {
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
-      "description": "An IDE for AI coding agents that never lose context",
+      "description": "An IDE that keeps your agents, goals, and knowledge connected.",
       "prs": 47,
       "commits": 47
     },
@@ -25,7 +25,7 @@
     {
       "name": "vis-aria-depth",
       "repository": "NeoKazuya/vis-aria-depth",
-      "description": "",
+      "description": "Aria 2 Depth Mapping for VIS Lab",
       "prs": 0,
       "commits": 18
     },

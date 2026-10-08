@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Publish aggregate GitHub activity; never persist commit messages or PR details."""
-import argparse, datetime as dt, html, json, os, subprocess
+import argparse, datetime as dt, html, json, os, subprocess, textwrap
 from pathlib import Path
 from zoneinfo import ZoneInfo
 UTC = dt.timezone.utc
@@ -90,7 +90,9 @@ def rank(rows):
 def render(rows, label, generated, theme='dark'):
     bg, fg, sub, border, green, blue = ('#101419','#d6dde5','#99a5b3','#29313b','#8cd5ac','#9bbef5') if theme=='dark' else ('#f6f8fa','#24292f','#57606a','#d0d7de','#176f40','#1756a9')
     shown = rank(rows)[:3]; rest=rank(rows)[3:]
-    height = 165 + max(1,len(shown))*65 + (37 if rest else 0)
+    descriptions = [textwrap.wrap(' '.join(p['description'].split()), width=92) for p in shown]
+    row_heights = [45 + 18*len(lines) for lines in descriptions]
+    height = 165 + (sum(row_heights) if shown else 65) + (37 if rest else 0)
     s=[f'<svg xmlns="http://www.w3.org/2000/svg" width="768" height="{height}" viewBox="0 0 768 {height}" role="img" aria-labelledby="title desc">', '<title id="title">Weekly GitHub build log</title>',f'<desc id="desc">{html.escape(label)}. {sum(p["prs"] for p in rows)} authored PRs merged; {sum(p["commits"] for p in rows)} authored commits on default branches. Top three active projects.</desc>', f'<rect x=".5" y=".5" width="767" height="{height-1}" rx="8" fill="{bg}" stroke="{border}"/>']
     def text(x,y,value,size=14,color=None,weight=400):
         s.append(f'<text x="{x}" y="{y}" fill="{color or fg}" font-family="Menlo,Consolas,monospace" font-size="{size}" font-weight="{weight}">{html.escape(str(value))}</text>')
@@ -103,14 +105,16 @@ def render(rows, label, generated, theme='dark'):
     text(290,70,f'{sum(p["commits"] for p in rows):,} commits',18,blue,600)
     text(575,70,f'{len(rows)} projects',16)
     line(91)
+    y = 125
     for i,p in enumerate(shown):
-        y=125+i*65
         text(28,y,trim(p['name'],39),15)
         text(474,y,f'{p["prs"]:>3,} PRs',14,green)
         text(599,y,f'{p["commits"]:,} commits',14,blue)
-        if p['description']:text(28,y+24,trim(p['description'],80),12,sub)
+        for j, description_line in enumerate(descriptions[i]):
+            text(28,y+24+j*18,description_line,12,sub)
+        y += row_heights[i]
     if not shown:text(28,131,'No recorded activity in this window.',14,sub)
-    bottom=108+max(1,len(shown))*65
+    bottom=108+(sum(row_heights) if shown else 65)
     line(bottom)
     if rest:
         text(28,bottom+27,f'+ {len(rest)} other projects',13,sub)
