@@ -1,0 +1,35 @@
+{
+  "period": "Oct 2\u2013Oct 8",
+  "projects": [
+    {
+      "name": "neo-ide",
+      "description": "An IDE for AI coding agents that never lose context",
+      "prs": 47,
+      "commits": 47
+    },
+    {
+      "name": "discord-llm",
+      "description": "Discord LLM chatbot with persistent memory, event scheduling, and adaptive personality. Supports OpenAI, Anthropic, and other OpenAI-compatible APIs.",
+      "prs": 2,
+      "commits": 5
+    },
+    {
+      "name": "vis-aria-depth",
+      "description": "",
+      "prs": 0,
+      "commits": 18
+    },
+    {
+      "name": "agentic-trader",
+      "description": "Robinhood MCP Agent",
+      "prs": 0,
+      "commits": 2
+    },
+    {
+      "name": "repo-invite",
+      "description": "",
+      "prs": 0,
+      "commits": 1
+    }
+  ]
+}

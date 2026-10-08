@@ -1,0 +1,24 @@
+import datetime as dt
+import unittest
+import xml.etree.ElementTree as ET
+from unittest.mock import patch
+import activity as a
+class Tests(unittest.TestCase):
+ def test_ranking_and_totals(self):
+  rows=[{'name':n,'description':'a & <b>','prs':p,'commits':c} for n,p,c in [('z',2,9),('b',3,1),('a',3,1),('x',0,8)]]
+  self.assertEqual([p['name'] for p in a.rank(rows)],['a','b','z','x'])
+  root=ET.fromstring(a.render(rows,'Oct 2–8','2026-10-08'))
+  text=' '.join(root.itertext());self.assertIn('8 PRs merged',text);self.assertIn('19 commits',text);self.assertIn('+ 1 other projects',text)
+ def test_zero_and_long_names(self):
+  ET.fromstring(a.render([],'Oct 2–8','now'))
+  root=ET.fromstring(a.render([{'name':'x'*100,'description':'z'*150,'prs':999,'commits':1000}],'Oct 2–8','now','light'))
+  self.assertNotIn('x'*40,' '.join(root.itertext()))
+ def test_pr_bounds_author_and_closed_unmerged(self):
+  start=a.instant('2026-10-02T07:00:00Z');end=a.instant('2026-10-09T07:00:00Z')
+  def pr(date,author='me'):return {'merged_at':date,'user':{'login':author},'updated_at':'2026-10-09T08:00:00Z'}
+  self.assertEqual(a.count_prs([[pr('2026-10-02T07:00:00Z'),pr('2026-10-09T07:00:00Z'),pr(None),pr('2026-10-03T00:00:00Z','other')]],'me',start,end),1)
+ def test_pagination(self):
+  with patch.object(a,'api',side_effect=[[{}]*100,[{}]*3]) as call:
+   self.assertEqual(sum(len(p) for p in a.pages('/test?q=a')),103)
+   self.assertEqual(call.call_args.args[0],'/test?q=a&per_page=100&page=2')
+if __name__=='__main__':unittest.main()
