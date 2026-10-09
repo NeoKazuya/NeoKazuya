@@ -12,7 +12,7 @@
       "name": "TCGNakama",
       "repository": "AdminAsistee/TCGNakama",
       "description": "High-conversion TCG marketplace powered by Shopify + FastAPI, real-time inventory, admin vault dashboard, and mobile-first design.",
-      "prs": 21,
+      "prs": 22,
       "commits": 33
     },
     {
