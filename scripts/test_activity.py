@@ -45,4 +45,21 @@ class DescriptionTests(unittest.TestCase):
   self.assertNotIn('…',' '.join(values))
   self.assertGreater(int(root.attrib['height']),230)
 
+class AltTextTests(unittest.TestCase):
+ def test_alt_escapes_names_and_preserves_layout(self):
+  rows=[{'name':'a "quoted" & <name>', 'prs':2, 'commits':7}]
+  original='<picture><img alt="old" src="assets/activity-dark.svg" width="710" /></picture>'
+  updated=a.update_readme_alt(original,rows,'Oct 2–Oct 8')
+  root=ET.fromstring(updated);image=root.find('img')
+  self.assertEqual(image.attrib['width'],'710')
+  self.assertIn('2 merged PRs, 7 default-branch commits',image.attrib['alt'])
+  self.assertIn(rows[0]['name'],image.attrib['alt'])
+  self.assertEqual(updated,a.update_readme_alt(updated,rows,'Oct 2–Oct 8'))
+ def test_alt_uses_all_totals_but_only_top_three_names(self):
+  rows=[{'name':str(i),'prs':i,'commits':i} for i in range(1,5)]
+  self.assertIn('10 merged PRs',a.activity_alt(rows,'week'))
+  self.assertIn('Top projects by merged PRs: 4, 3, 2.',a.activity_alt(rows,'week'))
+ def test_missing_card_fails_instead_of_silently_staling(self):
+  with self.assertRaises(ValueError):a.update_readme_alt('other content',[],'week')
+
 if __name__=='__main__':unittest.main()

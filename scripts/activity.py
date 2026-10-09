@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Publish aggregate GitHub activity; never persist commit messages or PR details."""
-import argparse, datetime as dt, html, json, os, subprocess, textwrap
+import argparse, datetime as dt, html, json, os, subprocess, textwrap, re
 from pathlib import Path
 from zoneinfo import ZoneInfo
 UTC = dt.timezone.utc
@@ -87,6 +87,28 @@ def collect(login, start, end):
 def rank(rows):
     return sorted(rows, key=lambda p: (-p['prs'], -p['commits'], p['name'].casefold()))
 
+def activity_alt(rows, label):
+    summary = (f'Last 7 days ({label}): {sum(p["prs"] for p in rows):,} merged PRs, '
+               f'{sum(p["commits"] for p in rows):,} default-branch commits across {len(rows)} active projects. '
+               'Includes contributions to public and private repositories.')
+    top = rank(rows)[:3]
+    if top:
+        summary += ' Top projects by merged PRs: ' + ', '.join(p['name'] for p in top) + '.'
+    return summary
+
+def update_readme_alt(readme, rows, label):
+    # Update only this card, preserving the chosen width and all other README content.
+    pattern = r'<img\b(?=[^>]*\bsrc="assets/activity-dark\.svg")[^>]*>'
+    matches = list(re.finditer(pattern, readme))
+    if len(matches) != 1:
+        raise ValueError('Expected exactly one activity card; preserving published output.')
+    tag = matches[0].group()
+    replacement, count = re.subn(r'\balt="[^"]*"',
+        lambda _: 'alt="' + html.escape(activity_alt(rows, label), quote=True) + '"', tag)
+    if count != 1:
+        raise ValueError('Expected one alt attribute on activity card.')
+    return readme[:matches[0].start()] + replacement + readme[matches[0].end():]
+
 def render(rows, label, generated, theme='dark'):
     bg, fg, sub, border, green, blue = ('#101419','#d6dde5','#99a5b3','#29313b','#8cd5ac','#9bbef5') if theme=='dark' else ('#f6f8fa','#24292f','#57606a','#d0d7de','#176f40','#1756a9')
     shown = rank(rows)[:3]; rest=rank(rows)[3:]
@@ -134,9 +156,12 @@ def main():
     label=f'{start.strftime("%b")} {start.day}–{today.strftime("%b")} {today.day}'
     generated=now.strftime('%Y-%m-%d %H:%M')
     root=Path(__file__).resolve().parents[1];out=root/'assets';out.mkdir(exist_ok=True)
+    readme = root/'README.md'
+    updated_readme = update_readme_alt(readme.read_text(), rows, label)
     rendered={theme:render(rows,label,generated,theme) for theme in ['dark','light']}
     for theme,svg in rendered.items():
         tmp=out/f'activity-{theme}.tmp';tmp.write_text(svg);tmp.replace(out/f'activity-{theme}.svg')
+    readme.write_text(updated_readme)
     # This report is aggregate-only; raw API responses are never written.
     (root/'activity.json').write_text(json.dumps({'period':label,'projects':rank(rows)},indent=2)+'\n')
     print(f'Updated {len(rows)} active projects, {sum(p["prs"] for p in rows)} merged PRs, {sum(p["commits"] for p in rows)} commits.')
