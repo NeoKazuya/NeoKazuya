@@ -1,12 +1,12 @@
 {
-  "period": "Oct 4\u2013Oct 10",
+  "period": "Oct 5\u2013Oct 11",
   "projects": [
     {
-      "name": "neo-ide",
-      "repository": "NeoKazuya/neo-ide",
-      "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 50,
-      "commits": 50
+      "name": "auto-daybook",
+      "repository": "NeoKazuya/auto-daybook",
+      "description": "A local AI agent that automatically takes notes on your computer activity, building shared context for an extensible set of skills.",
+      "prs": 35,
+      "commits": 37
     },
     {
       "name": "TCGNakama",
@@ -14,6 +14,13 @@
       "description": "High-conversion TCG marketplace powered by Shopify + FastAPI, real-time inventory, admin vault dashboard, and mobile-first design.",
       "prs": 24,
       "commits": 33
+    },
+    {
+      "name": "neo-ide",
+      "repository": "NeoKazuya/neo-ide",
+      "description": "An IDE that keeps your agents, goals, and knowledge connected.",
+      "prs": 23,
+      "commits": 23
     },
     {
       "name": "discord-llm",
