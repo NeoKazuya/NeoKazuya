@@ -1,19 +1,12 @@
 {
-  "period": "Oct 5\u2013Oct 11",
+  "period": "Oct 6\u2013Oct 12",
   "projects": [
     {
       "name": "auto-daybook",
       "repository": "NeoKazuya/auto-daybook",
       "description": "A local AI agent that automatically takes notes on your computer activity, building shared context for an extensible set of skills.",
-      "prs": 35,
-      "commits": 37
-    },
-    {
-      "name": "TCGNakama",
-      "repository": "AdminAsistee/TCGNakama",
-      "description": "High-conversion TCG marketplace powered by Shopify + FastAPI, real-time inventory, admin vault dashboard, and mobile-first design.",
-      "prs": 24,
-      "commits": 33
+      "prs": 48,
+      "commits": 50
     },
     {
       "name": "neo-ide",
@@ -23,11 +16,11 @@
       "commits": 23
     },
     {
-      "name": "discord-llm",
-      "repository": "NeoKazuya/discord-llm",
-      "description": "Discord LLM chatbot with persistent memory, event scheduling, and adaptive personality. Supports OpenAI, Anthropic, and other OpenAI-compatible APIs.",
-      "prs": 1,
-      "commits": 2
+      "name": "TCGNakama",
+      "repository": "AdminAsistee/TCGNakama",
+      "description": "High-conversion TCG marketplace powered by Shopify + FastAPI, real-time inventory, admin vault dashboard, and mobile-first design.",
+      "prs": 15,
+      "commits": 11
     },
     {
       "name": "vis-aria-depth",
