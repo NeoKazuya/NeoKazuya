@@ -1,5 +1,5 @@
 {
-  "period": "Oct 7\u2013Oct 13",
+  "period": "Oct 8\u2013Oct 14",
   "projects": [
     {
       "name": "auto-daybook",
@@ -12,8 +12,8 @@
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 22,
-      "commits": 22
+      "prs": 14,
+      "commits": 14
     },
     {
       "name": "TCGNakama",
@@ -26,15 +26,22 @@
       "name": "vis-aria-depth",
       "repository": "NeoKazuya/vis-aria-depth",
       "description": "Aria 2 Depth Mapping for VIS Lab",
-      "prs": 5,
-      "commits": 24
+      "prs": 6,
+      "commits": 27
+    },
+    {
+      "name": "integer-mult-bounds",
+      "repository": "CrocSwap/integer-mult-bounds",
+      "description": "Conditional integer multiplication: kappa > 2^-15. Community proofs, exact certificates and reproducible audits; assumes the OpenAI #109 framework.",
+      "prs": 2,
+      "commits": 5
     },
     {
       "name": "agentic-trader",
       "repository": "NeoKazuya/agentic-trader",
       "description": "Robinhood MCP Agent",
       "prs": 0,
-      "commits": 3
+      "commits": 4
     }
   ]
 }
