@@ -1,5 +1,5 @@
 {
-  "period": "Oct 8\u2013Oct 14",
+  "period": "Oct 9\u2013Oct 15",
   "projects": [
     {
       "name": "auto-daybook",
@@ -12,15 +12,8 @@
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 14,
-      "commits": 14
-    },
-    {
-      "name": "TCGNakama",
-      "repository": "AdminAsistee/TCGNakama",
-      "description": "High-conversion TCG marketplace powered by Shopify + FastAPI, real-time inventory, admin vault dashboard, and mobile-first design.",
-      "prs": 9,
-      "commits": 0
+      "prs": 18,
+      "commits": 26
     },
     {
       "name": "vis-aria-depth",
@@ -37,11 +30,18 @@
       "commits": 5
     },
     {
+      "name": "TCGNakama",
+      "repository": "AdminAsistee/TCGNakama",
+      "description": "High-conversion TCG marketplace powered by Shopify + FastAPI, real-time inventory, admin vault dashboard, and mobile-first design.",
+      "prs": 1,
+      "commits": 0
+    },
+    {
       "name": "agentic-trader",
       "repository": "NeoKazuya/agentic-trader",
       "description": "Robinhood MCP Agent",
       "prs": 0,
-      "commits": 4
+      "commits": 3
     }
   ]
 }
