@@ -1,19 +1,19 @@
 {
-  "period": "Oct 9\u2013Oct 15",
+  "period": "Oct 10\u2013Oct 16",
   "projects": [
+    {
+      "name": "neo-ide",
+      "repository": "NeoKazuya/neo-ide",
+      "description": "An IDE that keeps your agents, goals, and knowledge connected.",
+      "prs": 67,
+      "commits": 75
+    },
     {
       "name": "auto-daybook",
       "repository": "NeoKazuya/auto-daybook",
       "description": "A local AI agent that automatically takes notes on your computer activity, building shared context for an extensible set of skills.",
       "prs": 48,
       "commits": 50
-    },
-    {
-      "name": "neo-ide",
-      "repository": "NeoKazuya/neo-ide",
-      "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 18,
-      "commits": 26
     },
     {
       "name": "vis-aria-depth",
