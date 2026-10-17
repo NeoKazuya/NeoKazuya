@@ -1,19 +1,19 @@
 {
-  "period": "Oct 10\u2013Oct 16",
+  "period": "Oct 11\u2013Oct 17",
   "projects": [
     {
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 67,
-      "commits": 75
+      "prs": 64,
+      "commits": 72
     },
     {
       "name": "auto-daybook",
       "repository": "NeoKazuya/auto-daybook",
       "description": "A local AI agent that automatically takes notes on your computer activity, building shared context for an extensible set of skills.",
-      "prs": 48,
-      "commits": 50
+      "prs": 25,
+      "commits": 25
     },
     {
       "name": "vis-aria-depth",
@@ -23,18 +23,18 @@
       "commits": 27
     },
     {
+      "name": "TCGNakama",
+      "repository": "AdminAsistee/TCGNakama",
+      "description": "High-conversion TCG marketplace powered by Shopify + FastAPI, real-time inventory, admin vault dashboard, and mobile-first design.",
+      "prs": 6,
+      "commits": 0
+    },
+    {
       "name": "integer-mult-bounds",
       "repository": "CrocSwap/integer-mult-bounds",
       "description": "Conditional integer multiplication: kappa > 2^-15. Community proofs, exact certificates and reproducible audits; assumes the OpenAI #109 framework.",
       "prs": 2,
       "commits": 5
-    },
-    {
-      "name": "TCGNakama",
-      "repository": "AdminAsistee/TCGNakama",
-      "description": "High-conversion TCG marketplace powered by Shopify + FastAPI, real-time inventory, admin vault dashboard, and mobile-first design.",
-      "prs": 1,
-      "commits": 0
     },
     {
       "name": "agentic-trader",
