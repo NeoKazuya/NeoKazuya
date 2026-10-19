@@ -1,12 +1,12 @@
 {
-  "period": "Oct 12\u2013Oct 18",
+  "period": "Oct 13\u2013Oct 19",
   "projects": [
     {
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
       "prs": 72,
-      "commits": 80
+      "commits": 79
     },
     {
       "name": "TCGNakama",
@@ -20,14 +20,14 @@
       "repository": "NeoKazuya/vis-aria-depth",
       "description": "Aria 2 Depth Mapping for VIS Lab",
       "prs": 6,
-      "commits": 27
+      "commits": 13
     },
     {
       "name": "integer-mult-bounds",
       "repository": "CrocSwap/integer-mult-bounds",
       "description": "Conditional integer multiplication: kappa > 2^-15. Community proofs, exact certificates and reproducible audits; assumes the OpenAI #109 framework.",
       "prs": 2,
-      "commits": 5
+      "commits": 1
     },
     {
       "name": "agentic-trader",
