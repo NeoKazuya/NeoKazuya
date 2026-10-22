@@ -1,12 +1,12 @@
 {
-  "period": "Oct 15\u2013Oct 21",
+  "period": "Oct 16\u2013Oct 22",
   "projects": [
     {
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 142,
-      "commits": 149
+      "prs": 147,
+      "commits": 147
     },
     {
       "name": "TCGNakama",
@@ -27,7 +27,7 @@
       "repository": "NeoKazuya/agentic-trader",
       "description": "Robinhood MCP Agent",
       "prs": 0,
-      "commits": 2
+      "commits": 1
     }
   ]
 }
