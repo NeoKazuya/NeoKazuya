@@ -1,12 +1,12 @@
 {
-  "period": "Oct 23\u2013Oct 29",
+  "period": "Oct 24\u2013Oct 30",
   "projects": [
     {
       "name": "TCGNakama",
       "repository": "AdminAsistee/TCGNakama",
       "description": "High-conversion TCG marketplace powered by Shopify + FastAPI, real-time inventory, admin vault dashboard, and mobile-first design.",
-      "prs": 56,
-      "commits": 161
+      "prs": 55,
+      "commits": 146
     },
     {
       "name": "vis-aria-depth",
