@@ -1,19 +1,12 @@
 {
-  "period": "Oct 26\u2013Nov 1",
+  "period": "Oct 27\u2013Nov 2",
   "projects": [
     {
       "name": "TCGNakama",
       "repository": "AdminAsistee/TCGNakama",
       "description": "High-conversion TCG marketplace powered by Shopify + FastAPI, real-time inventory, admin vault dashboard, and mobile-first design.",
-      "prs": 33,
-      "commits": 72
-    },
-    {
-      "name": "vis-aria-depth",
-      "repository": "NeoKazuya/vis-aria-depth",
-      "description": "Aria 2 Depth Mapping for VIS Lab",
-      "prs": 12,
-      "commits": 12
+      "prs": 27,
+      "commits": 62
     },
     {
       "name": "neo-ide",
@@ -21,6 +14,13 @@
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
       "prs": 5,
       "commits": 5
+    },
+    {
+      "name": "vis-aria-depth",
+      "repository": "NeoKazuya/vis-aria-depth",
+      "description": "Aria 2 Depth Mapping for VIS Lab",
+      "prs": 2,
+      "commits": 2
     }
   ]
 }
