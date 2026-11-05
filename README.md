@@ -1,5 +1,5 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/activity-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/activity-light.svg">
-  <img alt="Last 7 days (Oct 29–Nov 4): 48 merged PRs, 58 default-branch commits across 3 active projects. Includes contributions to public and private repositories. Top projects by merged PRs: vis-aria-depth, neo-ide, TCGNakama." src="assets/activity-dark.svg" width="710">
+  <img alt="Last 7 days (Oct 30–Nov 5): 46 merged PRs, 76 default-branch commits across 3 active projects. Includes contributions to public and private repositories. Top projects by merged PRs: NeoKazuya/vis-aria-depth, neo-ide, michaelnkr808/vis-aria-depth." src="assets/activity-dark.svg" width="710">
 </picture>
