@@ -1,5 +1,5 @@
 {
-  "period": "Nov 2\u2013Nov 8",
+  "period": "Nov 3\u2013Nov 9",
   "projects": [
     {
       "name": "NeoKazuya/vis-aria-depth",
@@ -9,16 +9,16 @@
       "commits": 31
     },
     {
-      "name": "neo-ide",
-      "repository": "NeoKazuya/neo-ide",
-      "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 16,
-      "commits": 16
-    },
-    {
       "name": "agentic-trader",
       "repository": "NeoKazuya/agentic-trader",
       "description": "Robinhood MCP Agent",
+      "prs": 3,
+      "commits": 3
+    },
+    {
+      "name": "neo-ide",
+      "repository": "NeoKazuya/neo-ide",
+      "description": "An IDE that keeps your agents, goals, and knowledge connected.",
       "prs": 2,
       "commits": 2
     },
