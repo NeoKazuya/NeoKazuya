@@ -1,12 +1,12 @@
 {
-  "period": "Nov 3\u2013Nov 9",
+  "period": "Nov 4\u2013Nov 10",
   "projects": [
     {
       "name": "NeoKazuya/vis-aria-depth",
       "repository": "NeoKazuya/vis-aria-depth",
       "description": "Aria 2 Depth Mapping for VIS Lab",
-      "prs": 31,
-      "commits": 31
+      "prs": 21,
+      "commits": 21
     },
     {
       "name": "agentic-trader",
@@ -27,7 +27,7 @@
       "repository": "michaelnkr808/vis-aria-depth",
       "description": "Aria 2 Depth Mapping for VIS Lab",
       "prs": 0,
-      "commits": 30
+      "commits": 16
     }
   ]
 }
