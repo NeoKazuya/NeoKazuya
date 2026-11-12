@@ -1,26 +1,33 @@
 {
-  "period": "Nov 5\u2013Nov 11",
+  "period": "Nov 6\u2013Nov 12",
   "projects": [
     {
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 7,
-      "commits": 7
+      "prs": 19,
+      "commits": 19
+    },
+    {
+      "name": "website",
+      "repository": "Highline-Robotics/website",
+      "description": "Main website",
+      "prs": 4,
+      "commits": 6
     },
     {
       "name": "vis-aria-depth",
       "repository": "NeoKazuya/vis-aria-depth",
       "description": "Aria 2 Depth Mapping for VIS Lab",
-      "prs": 5,
-      "commits": 5
+      "prs": 4,
+      "commits": 4
     },
     {
       "name": "agentic-trader",
       "repository": "NeoKazuya/agentic-trader",
       "description": "Robinhood MCP Agent",
-      "prs": 3,
-      "commits": 3
+      "prs": 1,
+      "commits": 1
     }
   ]
 }
