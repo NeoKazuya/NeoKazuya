@@ -1,12 +1,12 @@
 {
-  "period": "Nov 8\u2013Nov 14",
+  "period": "Nov 9\u2013Nov 15",
   "projects": [
     {
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 21,
-      "commits": 21
+      "prs": 26,
+      "commits": 26
     },
     {
       "name": "website",
