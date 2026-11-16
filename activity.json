@@ -1,12 +1,12 @@
 {
-  "period": "Nov 9\u2013Nov 15",
+  "period": "Nov 10\u2013Nov 16",
   "projects": [
     {
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 26,
-      "commits": 26
+      "prs": 25,
+      "commits": 25
     },
     {
       "name": "website",
@@ -19,15 +19,8 @@
       "name": "vis-aria-depth",
       "repository": "NeoKazuya/vis-aria-depth",
       "description": "Aria 2 Depth Mapping for VIS Lab",
-      "prs": 4,
-      "commits": 4
-    },
-    {
-      "name": "agentic-trader",
-      "repository": "NeoKazuya/agentic-trader",
-      "description": "Robinhood MCP Agent",
-      "prs": 1,
-      "commits": 1
+      "prs": 3,
+      "commits": 3
     }
   ]
 }
