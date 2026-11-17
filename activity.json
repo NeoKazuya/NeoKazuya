@@ -1,26 +1,19 @@
 {
-  "period": "Nov 10\u2013Nov 16",
+  "period": "Nov 11\u2013Nov 17",
   "projects": [
     {
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 25,
-      "commits": 25
+      "prs": 23,
+      "commits": 23
     },
     {
       "name": "website",
       "repository": "Highline-Robotics/website",
-      "description": "Main website",
+      "description": "HL Main website",
       "prs": 4,
       "commits": 6
-    },
-    {
-      "name": "vis-aria-depth",
-      "repository": "NeoKazuya/vis-aria-depth",
-      "description": "Aria 2 Depth Mapping for VIS Lab",
-      "prs": 3,
-      "commits": 3
     }
   ]
 }
