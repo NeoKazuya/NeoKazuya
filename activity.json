@@ -1,19 +1,12 @@
 {
-  "period": "Nov 12\u2013Nov 18",
+  "period": "Nov 13\u2013Nov 19",
   "projects": [
     {
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 22,
-      "commits": 22
-    },
-    {
-      "name": "website",
-      "repository": "Highline-Robotics/website",
-      "description": "HL Main website",
-      "prs": 2,
-      "commits": 2
+      "prs": 17,
+      "commits": 17
     }
   ]
 }
