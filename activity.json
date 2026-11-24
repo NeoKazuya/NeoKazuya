@@ -1,12 +1,33 @@
 {
-  "period": "Nov 16\u2013Nov 22",
+  "period": "Nov 17\u2013Nov 23",
   "projects": [
     {
       "name": "neo-ide",
       "repository": "NeoKazuya/neo-ide",
       "description": "An IDE that keeps your agents, goals, and knowledge connected.",
-      "prs": 40,
-      "commits": 40
+      "prs": 82,
+      "commits": 81
+    },
+    {
+      "name": "wing",
+      "repository": "avis-wing/wing",
+      "description": "Wearable Independence through Navigation Glasses (WING) \u2014 shared runtime, sensor interfaces, and streaming evaluation harness.",
+      "prs": 4,
+      "commits": 6
+    },
+    {
+      "name": "corvid",
+      "repository": "avis-wing/corvid",
+      "description": "Unified 4D metric-semantic spatial memory and corridor-graph navigation for wearable glasses.",
+      "prs": 0,
+      "commits": 1
+    },
+    {
+      "name": "tern",
+      "repository": "avis-wing/tern",
+      "description": "Real-time local clearance mapping with loop-closed episodic visual memory for wearable navigation.",
+      "prs": 0,
+      "commits": 1
     }
   ]
 }
