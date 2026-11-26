@@ -1,7 +1,8 @@
 import datetime as dt
 import unittest
 import xml.etree.ElementTree as ET
-from unittest.mock import patch
+from urllib.parse import parse_qs, urlsplit
+from unittest.mock import call, patch
 import activity as a
 class Tests(unittest.TestCase):
  def test_ranking_and_totals(self):
@@ -33,6 +34,68 @@ class CoverageTests(unittest.TestCase):
  def test_search_refuses_partial_results(self):
   with patch.object(a,'api',return_value={'incomplete_results':True,'total_count':4,'items':[]}):
    with self.assertRaises(RuntimeError):list(a.search_items('issues','test'))
+
+
+class ApiRecoveryTests(unittest.TestCase):
+ def response(self, status, *, headers='', body='{}', stderr=''):
+  return a.subprocess.CompletedProcess([], int(status >= 400), f'HTTP/2.0 {status}\n{headers}\n{body}', stderr)
+
+ def test_retries_server_error_and_honors_retry_after(self):
+  responses = [self.response(503), self.response(429, headers='Retry-After: 7\n'), self.response(200, body='[1]')]
+  with patch.object(a.subprocess, 'run', side_effect=responses), patch.object(a.time, 'sleep') as sleep:
+   self.assertEqual(a.api('/user/repos'), [1])
+  self.assertEqual(sleep.call_args_list, [call(2), call(7)])
+
+ def test_primary_rate_limit_respects_reset(self):
+  responses = [self.response(403, headers='X-RateLimit-Remaining: 0\nX-RateLimit-Reset: 1075\n'), self.response(200)]
+  with patch.object(a.subprocess, 'run', side_effect=responses), patch.object(a.time, 'time', return_value=1000), patch.object(a.time, 'sleep') as sleep:
+   self.assertEqual(a.api('/user/repos'), {})
+  sleep.assert_called_once_with(76)
+
+ def test_permission_error_reports_status_without_private_details(self):
+  response = self.response(403, headers='X-GitHub-Request-Id: 123A:456B\n', body='{"message":"secret body"}', stderr='secret stderr')
+  with patch.object(a.subprocess, 'run', return_value=response) as run, patch.object(a.time, 'sleep') as sleep:
+   with self.assertRaisesRegex(RuntimeError, r'/repos/<owner>/<repo>/pulls.*HTTP 403, request ID 123A:456B') as error:
+    a.api('/repos/private-owner/private-repo/pulls?state=closed')
+  self.assertNotRegex(str(error.exception), 'private-owner|private-repo|secret|state=closed')
+  run.assert_called_once()
+  sleep.assert_not_called()
+
+
+class SearchRecoveryTests(unittest.TestCase):
+ def test_recovers_incomplete_range_and_over_limit_subrange(self):
+  def response(path):
+   query = parse_qs(urlsplit(path).query)['q'][0]
+   dates = query.split('committer-date:')[1]
+   if dates == '2026-11-22..2026-11-25':
+    return {'incomplete_results': True, 'total_count': 1, 'items': ['discard me']}
+   if dates == '2026-11-22..2026-11-23':
+    return {'incomplete_results': False, 'total_count': 1001, 'items': []}
+   return {'incomplete_results': False, 'total_count': 1, 'items': [dates]}
+
+  with patch.object(a, 'api', side_effect=response):
+   results = a.search_date_range('commits', 'author:me', 'committer-date', dt.date(2026, 11, 22), dt.date(2026, 11, 25))
+  self.assertEqual(results, ['2026-11-22', '2026-11-23', '2026-11-24..2026-11-25'])
+
+ def test_single_day_retry_discards_incomplete_pagination_attempt(self):
+  def result(items, incomplete=False):
+   return {'incomplete_results': incomplete, 'total_count': 101, 'items': items}
+
+  responses = [result(['stale'] * 100), result([], True), result(['current'] * 100), result(['last'])]
+  with patch.object(a, 'api', side_effect=responses) as api, patch.object(a.time, 'sleep') as sleep:
+   date = dt.date(2026, 11, 25)
+   results = a.search_date_range('commits', 'author:me', 'committer-date', date, date)
+  self.assertEqual(results, ['current'] * 100 + ['last'])
+  self.assertEqual([parse_qs(urlsplit(args[0]).query)['page'][0] for args, _ in api.call_args_list], ['1', '2', '1', '2'])
+  sleep.assert_called_once_with(2)
+
+ def test_single_day_limit_still_preserves_the_existing_card(self):
+  with patch.object(a, 'api', return_value={'incomplete_results': False, 'total_count': 1001, 'items': []}) as api:
+   with self.assertRaisesRegex(a.IncompleteSearch, '1001 matches.*2026-11-25 UTC.*Existing card preserved'):
+    date = dt.date(2026, 11, 25)
+    a.search_date_range('commits', 'author:me', 'committer-date', date, date)
+  api.assert_called_once()
+
 
 class DescriptionTests(unittest.TestCase):
  def test_full_description_survives_wrapping(self):

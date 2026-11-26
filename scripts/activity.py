@@ -1,15 +1,51 @@
 #!/usr/bin/env python3
 """Publish aggregate GitHub activity; never persist commit messages or PR details."""
-import argparse, datetime as dt, html, json, os, subprocess, textwrap, re
+import argparse, datetime as dt, html, json, os, subprocess, textwrap, re, time
+from email.parser import Parser
 from pathlib import Path
 from zoneinfo import ZoneInfo
 UTC = dt.timezone.utc
 
+def retry_delay(status, headers, stderr, attempt):
+    rate_limited = status == 429 or (status == 403 and (
+        headers.get('Retry-After') is not None
+        or headers.get('X-RateLimit-Remaining') == '0'
+        or 'rate limit' in stderr.lower()
+    ))
+    if not rate_limited and status not in (500, 502, 503, 504):
+        return None
+
+    delay = (60 if rate_limited else 2) * 2 ** attempt
+    retry_after = headers.get('Retry-After', '')
+    if retry_after.isdecimal():
+        delay = int(retry_after)
+    reset = headers.get('X-RateLimit-Reset', '')
+    if rate_limited and headers.get('X-RateLimit-Remaining') == '0' and reset.isdecimal():
+        delay = max(delay, int(reset) - int(time.time()) + 1)
+    return delay if delay <= 120 else None
+
+
 def api(path):
-    result = subprocess.run(['gh', 'api', path], capture_output=True, text=True)
-    if result.returncode:
-        raise RuntimeError('GitHub request failed; existing card preserved. Check access and rate limits.')
-    return json.loads(result.stdout)
+    endpoint = re.sub(r'^/repos/[^/]+/[^/]+', '/repos/<owner>/<repo>', path.split('?')[0])
+    for attempt in range(3):
+        result = subprocess.run(['gh', 'api', '--include', path], capture_output=True, encoding='utf-8')
+        response, _, body = result.stdout.partition('\n\n')
+        status_line, _, header_lines = response.partition('\n')
+        if not result.returncode:
+            return json.loads(body)
+
+        match = re.match(r'^HTTP/\S+ (\d{3})\b', status_line)
+        status = int(match[1]) if match else None
+        headers = Parser().parsestr(header_lines)
+        delay = retry_delay(status, headers, result.stderr, attempt)
+        reason = f'HTTP {status}' if status else f'gh exit {result.returncode}, no HTTP status'
+        request_id = headers.get('X-GitHub-Request-Id', '')
+        if re.fullmatch(r'[0-9a-fA-F:]+', request_id):
+            reason += f', request ID {request_id}'
+        if attempt == 2 or delay is None:
+            raise RuntimeError(f'GitHub request to {endpoint} failed ({reason}). Existing card preserved.')
+        print(f'GitHub request to {endpoint} failed ({reason}). Retrying in {delay}s.', flush=True)
+        time.sleep(delay)
 
 def pages(path):
     page = 1
@@ -33,17 +69,43 @@ def count_prs(batches, login, start, end):
         if batch and instant(batch[-1]['updated_at']) < start: break
     return count
 
-def search_items(kind, query):
-    """Discover external contributions without silently truncating GitHub search."""
+class IncompleteSearch(RuntimeError):
+    pass
+
+
+def search_items(kind, query, *, attempts=1):
+    """Return a complete search result before using it for repository discovery."""
     from urllib.parse import urlencode
-    page = 1
-    while True:
-        result = api('/search/' + kind + '?' + urlencode({'q':query,'per_page':100,'page':page}))
-        if result.get('incomplete_results') or result['total_count'] > 1000:
-            raise RuntimeError('Contribution discovery incomplete; previous card preserved.')
-        yield from result['items']
-        if page * 100 >= result['total_count']: break
-        page += 1
+    for attempt in range(attempts):
+        items = []
+        page = 1
+        while True:
+            result = api('/search/' + kind + '?' + urlencode({'q': query, 'per_page': 100, 'page': page}))
+            total = result['total_count']
+            if total > 1000:
+                raise IncompleteSearch(f'{kind} search reported {total} matches (limit 1000).')
+            if result.get('incomplete_results'):
+                break
+            items.extend(result['items'])
+            if page * 100 >= total:
+                return items
+            page += 1
+        if attempt + 1 < attempts:
+            time.sleep(2 ** (attempt + 1))
+    raise IncompleteSearch(f'GitHub marked {kind} search results incomplete on page {page}.')
+
+
+def search_date_range(kind, query, date_field, first, last):
+    dates = first.isoformat() if first == last else f'{first.isoformat()}..{last.isoformat()}'
+    try:
+        return search_items(kind, f'{query} {date_field}:{dates}', attempts=3 if first == last else 1)
+    except IncompleteSearch as error:
+        if first == last:
+            raise IncompleteSearch(f'{error} Search date: {dates} UTC. Existing card preserved.') from None
+        print(f'{error} Retrying with shorter date ranges within {dates} UTC.', flush=True)
+    middle = first + (last - first) // 2
+    return (search_date_range(kind, query, date_field, first, middle)
+            + search_date_range(kind, query, date_field, middle + dt.timedelta(days=1), last))
 
 def discover_repos(login, start, end):
     # Membership covers direct commits, including private collaborator/org work.
@@ -51,11 +113,12 @@ def discover_repos(login, start, end):
         '/user/repos?affiliation=owner,collaborator,organization_member&sort=full_name') for r in batch}
     # Search also finds public upstream contributions without collaborator access.
     # Broad UTC dates discover candidates; exact timezone boundaries are applied later.
-    dates = start.astimezone(UTC).date().isoformat() + '..' + end.astimezone(UTC).date().isoformat()
+    first = start.astimezone(UTC).date()
+    last = end.astimezone(UTC).date()
     names = set()
-    for pr in search_items('issues', f'is:pr author:{login} is:merged merged:{dates}'):
+    for pr in search_date_range('issues', f'is:pr author:{login} is:merged', 'merged', first, last):
         names.add(pr['repository_url'].split('/repos/',1)[1])
-    for commit in search_items('commits', f'author:{login} committer-date:{dates}'):
+    for commit in search_date_range('commits', f'author:{login}', 'committer-date', first, last):
         names.add(commit['repository']['full_name'])
     for name in sorted(names):
         if name.lower() not in repos: repos[name.lower()] = api('/repos/' + name)
